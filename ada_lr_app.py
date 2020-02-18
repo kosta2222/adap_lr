@@ -1,6 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import math
 class NN_pars:
     inputNeurons=None
     outputsNeurons=None
@@ -27,52 +25,6 @@ def get_y_data():
         for e in range(NN.outputNeurons):
             val=y[r][e]
             vec_y[r*NN.outputNeurons+e]=val
-RELU=0
-RELU_DERIV=1
-SIGMOID=2
-SIGMOID_DERIV=3
-TRESHOLD_FUNC=4
-TRESHOLD_FUNC_DERIV=5
-LEAKY_RELU=6
-LEAKY_RELU_DERIV=7
-DEBUG=8
-DEBUG_STR=9
-def operations(op,a,b,c,d,str):
-    if op==RELU:
-        if (a < 0):
-            return 0
-        else:
-           return a
-    elif op==RELU_DERIV:
-         if (a < 0):
-             return 0
-         else:
-             return a
-    elif op==TRESHOLD_FUNC:
-        if (a < 0):
-              return 0
-        else:
-            return 1
-    elif op==TRESHOLD_FUNC_DERIV:
-         return 0
-    elif op==LEAKY_RELU:
-        if (a < 0):
-             return b * a
-        else:
-             return a
-    elif op==LEAKY_RELU_DERIV:
-        if (a < 0):
-            return b
-        else:
-            return 1
-    elif op==SIGMOID:
-        return 1.0 / (1 + math.exp(b * (-a)))
-    elif op==SIGMOID_DERIV:
-         return b * 1.0 / (1 + math.exp(b * (-a))) * (1 - 1.0 / (1 + math.exp(b * (-a))))
-    elif op==DEBUG:
-      print("%s : %f"% str, a);
-    elif op==DEBUG_STR:
-       print("%s"% str)
 def cross_validation(model,X_test:list,Y_test:list,rows,cols_X_test,cols_Y_test)->float:
     tmp_vec_x_test=[0]*max_in_nn
     tmp_vec_y_test=[0]*rows_orOut
@@ -115,10 +67,3 @@ def calc_accur(scores:list,rows)->float:
         sum+=scores[col]
     accuracy=sum/rows*100
     return accuracy
-def plot_history(history):
-    fig,ax=plt.subplots()
-    x=range(eps)
-    plt.plot(x,history.history['loss'])
-    ax.set_xlabel("Epochs")
-    ax.set_ylabel("Mse")
-    plt.show()
