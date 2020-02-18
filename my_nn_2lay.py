@@ -33,7 +33,7 @@ class NN:
         return self.hidden2
     def plot_history(x,y):
         fig, ax = plt.subplots()
-        plt.plot()
+        plt.plot(x,y)
         ax.set_xlabel("Epochs")
         ax.set_ylabel("Mse")
         plt.show()
@@ -48,15 +48,15 @@ class NN:
         """
              Расчет ошибки 
         """
-        delta_out = abs(target.T - out_NN)
+        delta_out = ( out_NN-target.T)
         grads_out_nn = delta_out * self.operations(RELU_DERIV,self.e2)
         grads_on_lay2 = np.dot(grads_out_nn.T, self.in_layer2) * self.operations(RELU_DERIV,self.e1.T)# Подправлям дифференциалы
         grads_on_lay1 = np.dot(grads_on_lay2, self.in_layer1)  # Подправлям дифференциалы
         """
            Коррекция ошибки
         """
-        self.in_layer1 += (vector * grads_on_lay1 * l_r)
-        self.in_layer2 += (self.e1.T * grads_on_lay2 * l_r)
+        self.in_layer1 -= (vector * grads_on_lay1 * l_r)
+        self.in_layer2 -= (self.e1.T * grads_on_lay2 * l_r)
         return self.calculate_minimal_square_error(delta_out)
     def learn(self,init_l_r, epocha: int, train_set, target_set):
         error = 0.0
@@ -73,41 +73,50 @@ class NN:
                 n_epochs.append(iteration)
                 n_mse.append(error)
             iteration += 1
-    def operations(self,op=0,a=0,b=0,c=0,d=0,str=""):
+    def operations(self,op=0,a=0,b=1,c=0,d=0,str=""):
+        l=[]
         if op==RELU:
-            if (a < 0):
-                return 0
-            else:
-                return a
+            for i in a:
+                if (a < 0):
+                     l.append(0)
+                else:
+                     l.append(i)
+            return np.array(l).T
         elif op==RELU_DERIV:
-            if (a < 0):
-                return 0
-            else:
-                return a
+            for i in a:
+                if (i < 0):
+                   l.append(0)
+                else:
+                    l.append(1)
+            return np.array(l).T
         elif op==TRESHOLD_FUNC:
-            if (a < 0):
-                return 0
-            else:
-                return 1
+            for i in a:
+               if (i < 0):
+                     l.append(0)
+               else:
+                    l.append(1)
+            return np.array(l).T
         elif op==TRESHOLD_FUNC_DERIV:
-            return 0
+            pass # Нет производной
         elif op==LEAKY_RELU:
-            if (a < 0):
-                return b * a
-            else:
-                return a
+            for i in a:
+               if (i < 0):
+                    l.append(b * a)
+               else:
+                    l.append(i)
+            return np.array(l).T
         elif op==LEAKY_RELU_DERIV:
-            if (a < 0):
-                return b
-            else:
-                return 1
+            for i in a:
+               if (i < 0):
+                    l.append(b)
+               else:
+                  l.append(1)
+            return np.array(l).T
         elif op==SIGMOID:
-            return 1.0 / (1 + math.exp(b * (-a)))
+            return (1.0 / (1 + np.exp(b * (-a)))).T
         elif op==SIGMOID_DERIV:
-            return b * 1.0 / (1 + math.exp(b * (-a))) * (1 - 1.0 / (1 + math.exp(b * (-a))))
+            return (b * 1.0 / (1 + np.exp(b * (-a))) * (1 - 1.0 / (1 + np.exp(b * (-a))))).T
         elif op==DEBUG:
-            print("%s : %f"% str, a);
+            print("%s : %f"% str, a)
         elif op==DEBUG_STR:
             print("%s"% str)
-def create_nn() -> NN:
-    return NN()
