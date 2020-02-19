@@ -21,8 +21,8 @@ class NN:
         self.hidden2 = None  # активированное состояние нейронов на второй прослойке
         self.init_net()
     def init_net(self):
-        self.in_layer1 = np.random.randn(2,3)*math.sqrt(2.0/2)
-        self.in_layer2 = np.random.randn(3,1)*math.sqrt(2.0/3)
+        self.in_layer1 = np.random.randn(3,2)*math.sqrt(2.0/2)
+        self.in_layer2 = np.random.randn(1,3)*math.sqrt(2.0/3)
     def direct_motion(self, _vector):
         """
 
@@ -34,7 +34,7 @@ class NN:
         self.e2 = np.dot(self.in_layer2, self.hidden1)
         self.hidden2 = self.operations(RELU,self.e2)
         return self.hidden2
-    def plot_history(x,y):
+    def plot_history(self,x,y):
         fig, ax = plt.subplots()
         plt.plot(x,y)
         ax.set_xlabel("Epochs")
@@ -62,7 +62,7 @@ class NN:
         self.in_layer2 -= (self.e1.T * grads_on_lay2 * l_r)
         return self.calculate_minimal_square_error(delta_out)
 
-    def learn(self,init_l_r, epocha: int, train_set, target_set):
+    def learn(self, init_l_r: float, epocha: object, train_set: object, target_set: object) -> object:
         """
         :param init_l_r: коэффициент обучения
         :param epocha: количество эпох
@@ -75,7 +75,7 @@ class NN:
         n_epochs = []
         n_mse = []
         while (iteration < epocha):
-            assert train_set!=None
+            assert train_set.shape!=None
             for i in range(train_set.shape[0]):
                 """
                 Здесь извлекаем 1D numpy массив,но для сети нам нужен вектор
@@ -90,7 +90,10 @@ class NN:
                 n_epochs.append(iteration)
                 n_mse.append(error)
             iteration += 1
+        self.plot_history(n_epochs,n_mse)   
     def operations(self,op=0,a=0,b=1,c=0,d=0,str=""):
+        a=a.T
+        a=a[0]
         """
         В основно для функций активаций
         :param op: 'байт-комманда'
@@ -104,25 +107,25 @@ class NN:
         l=[]
         if op==RELU:
             for i in a:
-                if (a < 0):
+                if (i < 0):
                      l.append(0)
                 else:
                      l.append(i)
-            return np.array(l).T
+            return np.array([l]).T
         elif op==RELU_DERIV:
             for i in a:
                 if (i < 0):
                    l.append(0)
                 else:
                     l.append(1)
-            return np.array(l).T
+            return np.array([l]).T
         elif op==TRESHOLD_FUNC:
             for i in a:
                if (i < 0):
                      l.append(0)
                else:
                     l.append(1)
-            return np.array(l).T
+            return np.array([l]).T
         elif op==TRESHOLD_FUNC_DERIV:
             pass # Нет производной
         elif op==LEAKY_RELU:
@@ -131,14 +134,14 @@ class NN:
                     l.append(b * a)
                else:
                     l.append(i)
-            return np.array(l).T
+            return np.array([l]).T
         elif op==LEAKY_RELU_DERIV:
             for i in a:
                if (i < 0):
                     l.append(b)
                else:
                   l.append(1)
-            return np.array(l).T
+            return np.array([l]).T
         elif op==SIGMOID:
             return (1.0 / (1 + np.exp(b * (-a)))).T
         elif op==SIGMOID_DERIV:

@@ -9,28 +9,26 @@ NN.outputNeurons=1
 max_in_nn=2
 rows_orOut=1
 validSet_rows=4
-x=[[1,1],[1,0],[0,1],[0,0] ]
-y=[[1],[1],[1],[0]]
 # 'Лентирование' матриц
-def get_x_data(x):
-    vec_x = [0] * NN.inputNeurons * validSet_rows
-    assert validSet_rows!=0
-    for r in range(validSet_rows):
-        for e in range(NN.inputNeurons):
+def get_x_data(x,in_:int,rows:int):
+    vec_x = [0] * in_ * rows
+    assert rows!=0
+    for r in range(rows):
+        for e in range(in_):
             val=x[r][e]
             vec_x[r*NN.inputNeurons+e]=val
     return vec_x
 # 'Лентирование' матриц
-def get_y_data(y):
-    assert validSet_rows!=0
-    vec_y = [0] * NN.outputNeurons * validSet_rows
-    global vec_y
+def get_y_data(y,out:int,rows:int):
+    assert rows!=0
+    vec_y = [0] * out * rows
+    assert rows!=0
     for r in range(validSet_rows):
         for e in range(NN.outputNeurons):
             val=y[r][e]
             vec_y[r*NN.outputNeurons+e]=val
     return vec_y
-def cross_validation(obj_nn:NN,X_test:list,Y_test:list,rows,cols_X_test,cols_Y_test)->float:
+def cross_validation(obj_nn: object, X_test: object, Y_test: object, rows: object, cols_X_test: object, cols_Y_test: object)-> object:
     """
     Производит (кросс-валидацию) предсказание и сверка ответов
     по всему  Обучающий набор/тестовая выборка
