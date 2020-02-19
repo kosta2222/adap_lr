@@ -30,9 +30,13 @@ class NN:
         :return: вектор последнего слоя
         """
         self.e1 = np.dot(self.in_layer1, _vector.T)
+        print("\te1:",self.e1)
         self.hidden1 = self.operations(RELU,self.e1)
+        print("\th1:",self.hidden1)
         self.e2 = np.dot(self.in_layer2, self.hidden1)
+        print("\te2:",self.e2)
         self.hidden2 = self.operations(RELU,self.e2)
+        print("\th2:",self.hidden2)
         return self.hidden2
     def plot_history(self,x,y):
         fig, ax = plt.subplots()
@@ -76,6 +80,7 @@ class NN:
         n_mse = []
         while (iteration < epocha):
             assert train_set.shape!=None
+            print("epocha:",iteration)
             for i in range(train_set.shape[0]):
                 """
                 Здесь извлекаем 1D numpy массив,но для сети нам нужен вектор
@@ -83,10 +88,13 @@ class NN:
                 тип list переводим в numpy матрицу
                 """
                 single_2D_array_train = np.array([train_set[i]])
+                print("\tx:",single_2D_array_train)
                 single_2D_array_target = np.array([target_set[i]])
+                print("\ty:",single_2D_array_target)
                 error = self.back_propagate(single_2D_array_train, single_2D_array_target,init_l_r)
+            print("------------------")
             if iteration % 1 == 0:
-                print(error)
+                print('mse:',error)
                 n_epochs.append(iteration)
                 n_mse.append(error)
             iteration += 1
@@ -95,7 +103,7 @@ class NN:
         a=a.T
         a=a[0]
         """
-        В основно для функций активаций
+        В основном для функций активаций
         :param op: 'байт-комманда'
         :param a: <>
         :param b: <>
